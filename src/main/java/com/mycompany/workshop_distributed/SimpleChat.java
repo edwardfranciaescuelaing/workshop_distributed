@@ -1,20 +1,30 @@
 package com.mycompany.workshop_distributed;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ObjectMessage;
 import org.jgroups.Receiver;
 import org.jgroups.View;
+import org.jgroups.util.Util;
 
 public class SimpleChat implements Receiver {
 
     JChannel channel;
     String user_name = System.getProperty("user.name", "n/a");
+    final List<String> state = new LinkedList<String>();
 
     private void start() throws Exception {
-        channel = new JChannel().setReceiver(this).connect("ChatCluster");
+        channel = new JChannel().setReceiver(this);
+        channel.connect("ChatCluster");
+        channel.getState(null, 10000);
         eventLoop();
         channel.close();
     }
@@ -44,9 +54,32 @@ public class SimpleChat implements Receiver {
 
     @Override
     public void receive(Message msg) {
-        System.out.println(msg.getSrc() + ": " + msg.getObject());
+        String line = msg.getSrc() + ": " + msg.getObject();
+        System.out.println(line);
+        synchronized (state) {
+            state.add(line);
+        }
     }
-    
+
+    @Override
+    public void getState(OutputStream output) throws Exception {
+        synchronized (state) {
+            Util.objectToStream(state, new DataOutputStream(output));
+        }
+    }
+
+    @Override
+    public void setState(InputStream input) throws Exception {
+        List<String> list;
+        list = (List<String>) Util.objectFromStream(new DataInputStream(input));
+        synchronized (state) {
+            state.clear();
+            state.addAll(list);
+        }
+        System.out.println(list.size() + " messages in chat history):");
+        list.forEach(System.out::println);
+    }
+
     public static void main(String[] args) throws Exception {
         new SimpleChat().start();
     }
