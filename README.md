@@ -78,7 +78,7 @@ Para una primera prueba en local lo que se hace es abrir el proyecto en el IDE e
   ![image](https://github.com/user-attachments/assets/52033671-830b-417c-a94f-a17650159cbb)
   - El proyecto correra en una terminal de netbeans de salida y cargara el chat para el user 1.
   ![image](https://github.com/user-attachments/assets/af35cf13-b135-4c03-ad8d-d2104871dacf)
-  - Se repite el proceso para el user 2 y se debera cargar el historial previamente indexado por el chat 1 del user 1; y adicional todo lo que se escriba debera verse en el user 1
+  - Se repite el proceso para el user 2 y se debera cargar el historial previamente indexado por el chat 1 del user 1; y adicional todo lo que se escriba debera verse en el user 1.
   ![image](https://github.com/user-attachments/assets/647f8694-75d2-4a8b-bde4-a68b855029f0)
   ![image](https://github.com/user-attachments/assets/dc9d63e6-7912-4ac3-9568-cce04078aa13)
   - Finalmente si ejecutamos una tercera vez se debera ver el historial de la coversación en el chat 3
